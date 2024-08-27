@@ -46,16 +46,25 @@
   
             <div class="flex-1 relative">
               <ng-container *ngFor="let date of getWeekDates(currentDate); let dayIndex = index">
-                <div class="absolute top-0 bottom-0 border-r" [ngStyle]="{'left.%': (100 / 7) * dayIndex, 'width.%': 100 / 7}">
+                <div class="absolute top-0 bottom-0 border-r" [ngStyle]="{'left.%': (100 / 7) * dayIndex, 'width.%': 100 / 7}" 
+                    cdkDropList
+                    (cdkDropListDropped)="onDrop($event, date)"
+                    [cdkDropListData]="date"
+                >
                   <ng-container *ngFor="let hour of hours">
                     <div
                       class="h-12 border-b cursor-pointer"
                       [ngClass]="{'bg-blue-200': isSelectedSlot(date, hour)}"
-                      (click)="onTimeSlotClick($event, date, hour)">
+                      (click)="onTimeSlotClick($event, date, hour)"
+                      cdkDropList [cdkDropListData]="hour">
                       <ng-container *ngFor="let appointment of getAppointmentsForDate(date)">
                         <div *ngIf="isAppointmentInHour(appointment, hour)"
                          class="bg-green-200 p-1 h-full rounded"
-                         (click)="onAppointmentClick(appointment)">
+                         (click)="onAppointmentClick(appointment)"
+                         cdkDrag
+                         [cdkDragData]="hour"
+                        (cdkDragStarted)="onDragStarted(appointment)"
+                        (cdkDragEnded)="onDragEnded($event)">
                           {{ appointment.title }}
                         </div>
                       </ng-container>

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
-import { DragDropModule } from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragDrop, CdkDropList, DragDropModule } from '@angular/cdk/drag-drop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { AppointmentFormComponent } from '../appointment-form/appointment-form.component';
@@ -11,7 +11,16 @@ import { AppointmentData } from '../models/appointment.model';
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [CommonModule, MatCardModule, DragDropModule, MatButtonModule, MatIconModule, AppointmentFormComponent],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    DragDropModule,
+    MatButtonModule,
+    MatIconModule,
+    AppointmentFormComponent,
+    CdkDrag,
+    CdkDropList,
+  ],
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.css'],
 })
@@ -25,6 +34,7 @@ export class CalendarComponent implements OnInit {
   selectedSlot: { date: Date, hour: number } | null = null;
   clickPosition: { x: number, y: number } | null = null;
   selectedAppointment: AppointmentData | null = null;
+  draggedAppointment: AppointmentData | null = null;
 
   constructor(private appointmentService: AppointmentService) {}
 
@@ -78,7 +88,38 @@ export class CalendarComponent implements OnInit {
     return this.appointmentService.getAppointmentsForDate(date);
   }
 
-  onDragEnded(event: any, appointment: any) {
+  onDragStarted(appointment: AppointmentData) {
+    this.draggedAppointment = appointment;
+    console.log("Drag started: ", this.draggedAppointment);
+  }
+
+  onDragEnded(event: any) {
+    console.log("Drag ended: ", this.draggedAppointment);
+
+    this.draggedAppointment = null;
+  }
+
+  onDrop(event: CdkDragDrop<any>, date: Date) {
+    console.log("Drag drop: ", this.draggedAppointment);
+
+    if (!this.draggedAppointment) {
+      return;
+    }
+
+    const newStart = new Date(date);
+    newStart.setHours(event.container.data, 0, 0, 0);
+    const duration = this.draggedAppointment.end.getTime() - this.draggedAppointment.start.getTime();
+    const newEnd = new Date(newStart.getTime() + duration);
+
+    const updatedAppointment: AppointmentData = {
+      ...this.draggedAppointment,
+      start: newStart,
+      end: newEnd
+    };
+
+    this.appointmentService.updateAppointment(updatedAppointment);
+    this.loadAppointments(); 
+    this.draggedAppointment = null;
   }
 
   onAppointmentAdded(appointment: any) {
