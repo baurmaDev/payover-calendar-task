@@ -12,6 +12,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 
 interface AppointmentData {
+  id: string;
   title: string;
   type: string;
   start: Date;
@@ -43,9 +44,12 @@ interface AppointmentData {
 })
 export class AppointmentFormComponent implements OnChanges, AfterViewInit {
   @Input() initialValues: { start: Date, end: Date } | null = null;
+  @Input() appointment: AppointmentData | null = null;
   @Input() clickPosition: { x: number, y: number } | null = null;
   @Output() appointmentAdded = new EventEmitter<AppointmentData>();
   @Output() closeForm = new EventEmitter<void>();
+  @Output() deleteAppointment = new EventEmitter<AppointmentData>();
+  @Output() updateAppointment = new EventEmitter<AppointmentData>();
   @Output() highlightTimeRange = new EventEmitter<{ start: Date, end: Date }>();
 
   appointmentForm: FormGroup;
@@ -62,15 +66,26 @@ export class AppointmentFormComponent implements OnChanges, AfterViewInit {
       videoConference: [false]
     });
   }
-
+  ngOnInit() {
+    if (this.appointment) {
+      this.appointmentForm.patchValue(this.appointment);
+    }
+  }
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['initialValues'] && this.initialValues) {
+    if (changes['appointment'] && this.appointment) {
+      this.appointmentForm.patchValue({
+        ...this.appointment,
+        start: new Date(this.appointment.start),
+        end: new Date(this.appointment.end)
+      });
+    } else if (changes['initialValues'] && this.initialValues) {
       this.appointmentForm.patchValue({
         start: this.initialValues.start,
         end: this.initialValues.end
       });
     }
   }
+  
 
   ngAfterViewInit() {
     if (this.clickPosition) {
@@ -103,19 +118,27 @@ export class AppointmentFormComponent implements OnChanges, AfterViewInit {
 
   onSubmit() {
     if (this.appointmentForm.valid) {
-      const appointment: AppointmentData = {
+      const appointmentData: AppointmentData = {
         ...this.appointmentForm.value,
         start: new Date(this.appointmentForm.value.start),
         end: new Date(this.appointmentForm.value.end)
       };
-      this.appointmentAdded.emit(appointment);
+  
+      if (this.appointment) {
+        appointmentData.id = this.appointment.id;
+        this.updateAppointment.emit(appointmentData);
+      } else {
+        this.appointmentAdded.emit(appointmentData); 
+      }
+  
       this.highlightTimeRange.emit({
-        start: appointment.start,
-        end: appointment.end
+        start: appointmentData.start,
+        end: appointmentData.end
       });
       this.closeForm.emit();
     }
   }
+  
   
 
   formatDate(date: Date): string {
@@ -126,5 +149,11 @@ export class AppointmentFormComponent implements OnChanges, AfterViewInit {
       hour: 'numeric',
       minute: 'numeric',
     });
+  }
+  onDelete() {
+    if (this.appointment) {
+      this.deleteAppointment.emit(this.appointment);
+      this.closeForm.emit();
+    }
   }
 }

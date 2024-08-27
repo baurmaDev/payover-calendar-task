@@ -1,4 +1,5 @@
 export interface AppointmentData {
+    id: string;
     title: string;
     type: string;
     start: Date;

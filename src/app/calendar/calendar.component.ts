@@ -39,6 +39,16 @@ export class CalendarComponent implements OnInit {
   }
   onAppointmentClick(appointment: any) {
     this.selectedAppointment = appointment;
+    console.log(this.selectedAppointment);
+  }
+  onDeleteAppointment(appointment: AppointmentData) {
+    this.appointmentService.deleteAppointment(appointment);
+    this.loadAppointments(); 
+  }
+  onUpdateAppointment(appointment: AppointmentData) {
+    this.appointmentService.updateAppointment(appointment);
+    this.loadAppointments(); 
+    this.onFormClose();
   }
   isAppointmentInHour(appointment: any, hour: number): boolean {
     return appointment.start.getHours() === hour;
@@ -77,7 +87,7 @@ export class CalendarComponent implements OnInit {
     this.selectedTimeRange = null;
     this.selectedSlot = null;
     this.loadAppointments();
-    
+    this.onFormClose();
   }
   onTimeSlotClick(event: MouseEvent, date: Date, hour: number,) {
     const start = new Date(date);
@@ -95,5 +105,9 @@ export class CalendarComponent implements OnInit {
       this.selectedSlot.date.toDateString() === date.toDateString() &&
       this.selectedSlot.hour === hour
     );
+  }
+  onFormClose() {
+    this.selectedTimeRange = null;
+    this.selectedAppointment = null;
   }
 }

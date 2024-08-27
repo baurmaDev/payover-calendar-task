@@ -46,6 +46,8 @@
   
       <div class="mt-6 flex justify-between">
         <button mat-raised-button color="primary" (click)="onSubmit()">Save</button>
+        <button type="button" (click)="onDelete()" *ngIf="appointment">Delete</button>
+
       </div>
     </mat-card-content>
   </mat-card>

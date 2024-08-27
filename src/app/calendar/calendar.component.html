@@ -69,14 +69,19 @@
       </main>
     </div>
   
-    <ng-container *ngIf="selectedTimeRange">
+    <ng-container *ngIf="selectedTimeRange || selectedAppointment">
       <app-appointment-form 
+      
         [initialValues]="selectedTimeRange" 
+        [appointment]="selectedAppointment"
         (appointmentAdded)="onAppointmentAdded($event)" 
         [clickPosition]="clickPosition" 
-        (closeForm)="selectedTimeRange = null"
+        (closeForm)="onFormClose()"
+        (deleteAppointment)="onDeleteAppointment($event)"
+        (updateAppointment)="onUpdateAppointment($event)">
+
       >
-    </app-appointment-form>
+      </app-appointment-form>
     </ng-container>
   </div>
   
