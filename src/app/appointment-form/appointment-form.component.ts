@@ -113,7 +113,7 @@ export class AppointmentFormComponent implements OnChanges, AfterViewInit {
   }
 
   formatDate(date: Date): string {
-    return date.toLocaleString('ru-RU', {
+    return date.toLocaleString('en-US', {
       weekday: 'long',
       day: 'numeric',
       month: 'long',

@@ -20,6 +20,7 @@ export class CalendarComponent implements OnInit {
   hours: number[] = Array.from({ length: 24 }, (_, i) => i);
   weekDates: Date[] = [];
   selectedTimeRange: { start: Date, end: Date } | null = null;
+  selectedSlot: { date: Date, hour: number } | null = null;
   clickPosition: { x: number, y: number } | null = null;
 
   constructor(private appointmentService: AppointmentService) {}
@@ -59,6 +60,7 @@ export class CalendarComponent implements OnInit {
   onAppointmentAdded(appointment: any) {
     this.appointmentService.addAppointment(appointment);
     this.selectedTimeRange = null;
+    this.selectedSlot = null;
   }
   onTimeSlotClick(event: MouseEvent, date: Date, hour: number,) {
     const start = new Date(date);
@@ -67,5 +69,14 @@ export class CalendarComponent implements OnInit {
     end.setHours(hour + 1, 0, 0, 0);
     this.selectedTimeRange = { start, end };
     this.clickPosition = { x: event.clientX, y: event.clientY };
+    this.selectedSlot = { date, hour };
+    
+  }
+  isSelectedSlot(date: Date, hour: number): boolean {
+    if (!this.selectedSlot) return false;
+    return (
+      this.selectedSlot.date.toDateString() === date.toDateString() &&
+      this.selectedSlot.hour === hour
+    );
   }
 }

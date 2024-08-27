@@ -1,62 +1,69 @@
 <div class="flex flex-col h-screen">
-  <header class="flex justify-between items-center p-4 border-b">
-    <button mat-icon-button (click)="changeWeek(-7)">
-      <mat-icon>chevron_left</mat-icon>
-    </button>
-    <h1 class="text-xl font-semibold">August 2024</h1>
-    <button mat-icon-button (click)="changeWeek(7)">
-      <mat-icon>chevron_right</mat-icon>
-    </button>
-  </header>
-  <div class="flex flex-1 overflow-hidden">
-    <aside class="w-48 p-4 border-r overflow-y-auto">
-      <button mat-raised-button class="w-full mb-4">
-        <mat-icon>add</mat-icon> Create
+    <header class="flex justify-between items-center p-4 border-b">
+      <button mat-icon-button (click)="changeWeek(-7)">
+        <mat-icon>chevron_left</mat-icon>
       </button>
-      <mat-card>
-        <mat-card-content class="p-2">
-          <div class="text-center">Calendar</div>
-        </mat-card-content>
-      </mat-card>
-    </aside>
-    <main class="flex-1 overflow-x-auto">
-      <div class="inline-flex flex-col min-w-full">
-        <div class="flex border-b">
-          <div class="w-16 flex-shrink-0"></div>
-          <ng-container *ngFor="let date of getWeekDates(currentDate)">
-            <div class="flex-1 text-center p-2" [ngClass]="{'bg-blue-100 rounded-t-lg': isCurrentDay(date)}">
-              <div class="font-semibold">{{ days[date.getDay()] }}</div>
-              <div class="text-2xl" [ngClass]="{'text-blue-600': isCurrentDay(date)}">
-                {{ date.getDate() }}
-              </div>
-            </div>
-          </ng-container>
-        </div>
-        <div class="flex flex-1">
-          <div class="w-16 flex-shrink-0 border-r">
-            <ng-container *ngFor="let hour of hours">
-              <div class="h-12 border-b text-xs p-1">
-                {{ hour === 0 ? '12 AM' : hour < 12 ? hour + ' AM' : hour === 12 ? '12 PM' : (hour - 12) + ' PM' }}
+      <h1 class="text-xl font-semibold">August 2024</h1>
+      <button mat-icon-button (click)="changeWeek(7)">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </header>
+  
+    <div class="flex flex-1 overflow-hidden">
+      <aside class="w-48 p-4 border-r overflow-y-auto">
+        <button mat-raised-button class="w-full mb-4">
+          <mat-icon>add</mat-icon> Create
+        </button>
+        <mat-card>
+          <mat-card-content class="p-2">
+            <div class="text-center">Calendar</div>
+          </mat-card-content>
+        </mat-card>
+      </aside>
+  
+      <main class="flex-1 overflow-x-auto">
+        <div class="inline-flex flex-col min-w-full">
+          <div class="flex border-b">
+            <div class="w-16 flex-shrink-0"></div>
+            <ng-container *ngFor="let date of getWeekDates(currentDate)">
+              <div class="flex-1 text-center p-2" [ngClass]="{'bg-blue-100 rounded-t-lg': isCurrentDay(date)}">
+                <div class="font-semibold">{{ days[date.getDay()] }}</div>
+                <div class="text-2xl" [ngClass]="{'text-blue-600': isCurrentDay(date)}">
+                  {{ date.getDate() }}
+                </div>
               </div>
             </ng-container>
           </div>
-          <div class="flex-1 relative">
-            <ng-container *ngFor="let date of getWeekDates(currentDate); let dayIndex = index">
-              <div class="absolute top-0 bottom-0 border-r" [ngStyle]="{'left.%': (100 / 7) * dayIndex, 'width.%': 100 / 7}">
-                <ng-container *ngFor="let hour of hours">
-                  <div class="h-12 border-b" (click)="onTimeSlotClick($event, date, hour)"></div>
-                </ng-container>
-              </div>
-            </ng-container>
-            <div class="absolute top-[144px] left-[42.86%] right-[42.86%] h-12 bg-red-200 border border-red-400 rounded p-1 text-xs">
-              Some event
+  
+          <div class="flex flex-1">
+            <div class="w-16 flex-shrink-0 border-r">
+              <ng-container *ngFor="let hour of hours">
+                <div class="h-12 border-b text-xs p-1">
+                  {{ hour === 0 ? '12 AM' : hour < 12 ? hour + ' AM' : hour === 12 ? '12 PM' : (hour - 12) + ' PM' }}
+                </div>
+              </ng-container>
+            </div>
+  
+            <div class="flex-1 relative">
+              <ng-container *ngFor="let date of getWeekDates(currentDate); let dayIndex = index">
+                <div class="absolute top-0 bottom-0 border-r" [ngStyle]="{'left.%': (100 / 7) * dayIndex, 'width.%': 100 / 7}">
+                  <ng-container *ngFor="let hour of hours">
+                    <div
+                      class="h-12 border-b cursor-pointer"
+                      [ngClass]="{'bg-blue-200': isSelectedSlot(date, hour)}"
+                      (click)="onTimeSlotClick($event, date, hour)">
+                    </div>
+                  </ng-container>
+                </div>
+              </ng-container>
             </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
+  
+    <ng-container *ngIf="selectedTimeRange">
+      <app-appointment-form [initialValues]="selectedTimeRange" (appointmentAdded)="onAppointmentAdded($event)" [clickPosition]="clickPosition" (closeForm)="selectedTimeRange = null"></app-appointment-form>
+    </ng-container>
   </div>
-  <ng-container *ngIf="selectedTimeRange">
-    <app-appointment-form [initialValues]="selectedTimeRange" [clickPosition]="clickPosition" (appointmentAdded)="onAppointmentAdded($event)" (closeForm)="selectedTimeRange = null"></app-appointment-form>
-  </ng-container>
-</div>
+  
