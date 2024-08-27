@@ -19,6 +19,7 @@ export class CalendarComponent implements OnInit {
   days: string[] = ['S', 'M', 'Т', 'W', 'T', 'F', 'S'];
   hours: number[] = Array.from({ length: 24 }, (_, i) => i);
   weekDates: Date[] = [];
+  selectedTimeRange: { start: Date, end: Date } | null = null;
   constructor(private appointmentService: AppointmentService) {}
 
   ngOnInit() {
@@ -55,5 +56,13 @@ export class CalendarComponent implements OnInit {
 
   onAppointmentAdded(appointment: any) {
     this.appointmentService.addAppointment(appointment);
+    this.selectedTimeRange = null;
+  }
+  onTimeSlotClick(date: Date, hour: number) {
+    const start = new Date(date);
+    start.setHours(hour, 0, 0, 0);
+    const end = new Date(start);
+    end.setHours(hour + 1, 0, 0, 0);
+    this.selectedTimeRange = { start, end };
   }
 }

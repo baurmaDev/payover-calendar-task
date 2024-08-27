@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -26,6 +26,7 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrls: ['./appointment-form.component.css']
 })
 export class AppointmentFormComponent {
+  @Input() initialValues: { start: Date, end: Date } | null = null;
   @Output() appointmentAdded = new EventEmitter<any>();
   appointmentForm: FormGroup;
 
@@ -34,6 +35,14 @@ export class AppointmentFormComponent {
       title: ['', Validators.required],
       date: ['', Validators.required]
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['initialValues'] && this.initialValues) {
+      this.appointmentForm.patchValue({
+        date: this.initialValues.start
+      });
+    }
   }
 
   onSubmit() {
