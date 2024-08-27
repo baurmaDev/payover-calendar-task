@@ -52,6 +52,13 @@
                       class="h-12 border-b cursor-pointer"
                       [ngClass]="{'bg-blue-200': isSelectedSlot(date, hour)}"
                       (click)="onTimeSlotClick($event, date, hour)">
+                      <ng-container *ngFor="let appointment of getAppointmentsForDate(date)">
+                        <div *ngIf="isAppointmentInHour(appointment, hour)"
+                         class="bg-green-200 p-1 h-full rounded"
+                         (click)="onAppointmentClick(appointment)">
+                          {{ appointment.title }}
+                        </div>
+                      </ng-container>
                     </div>
                   </ng-container>
                 </div>
@@ -63,7 +70,13 @@
     </div>
   
     <ng-container *ngIf="selectedTimeRange">
-      <app-appointment-form [initialValues]="selectedTimeRange" (appointmentAdded)="onAppointmentAdded($event)" [clickPosition]="clickPosition" (closeForm)="selectedTimeRange = null"></app-appointment-form>
+      <app-appointment-form 
+        [initialValues]="selectedTimeRange" 
+        (appointmentAdded)="onAppointmentAdded($event)" 
+        [clickPosition]="clickPosition" 
+        (closeForm)="selectedTimeRange = null"
+      >
+    </app-appointment-form>
     </ng-container>
   </div>
   

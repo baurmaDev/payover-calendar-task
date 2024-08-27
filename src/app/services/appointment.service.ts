@@ -18,9 +18,10 @@ export class AppointmentService {
 
   getAppointmentsForDate(date: Date) {
     return this.appointments.value.filter(appointment => 
-      appointment.date.toDateString() === date.toDateString()
+      appointment.start && new Date(appointment.start).toDateString() === date.toDateString()
     );
   }
+  
 
   deleteAppointment(appointment: any) {
     const currentAppointments = this.appointments.value;

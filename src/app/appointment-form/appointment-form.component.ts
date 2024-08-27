@@ -103,14 +103,20 @@ export class AppointmentFormComponent implements OnChanges, AfterViewInit {
 
   onSubmit() {
     if (this.appointmentForm.valid) {
-      this.appointmentAdded.emit(this.appointmentForm.value);
+      const appointment: AppointmentData = {
+        ...this.appointmentForm.value,
+        start: new Date(this.appointmentForm.value.start),
+        end: new Date(this.appointmentForm.value.end)
+      };
+      this.appointmentAdded.emit(appointment);
       this.highlightTimeRange.emit({
-        start: this.appointmentForm.value.start,
-        end: this.appointmentForm.value.end
+        start: appointment.start,
+        end: appointment.end
       });
       this.closeForm.emit();
     }
   }
+  
 
   formatDate(date: Date): string {
     return date.toLocaleString('en-US', {
