@@ -13,10 +13,10 @@ import { MatButtonModule } from '@angular/material/button';
   template: `
     <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()">
       <mat-form-field>
-        <input matInput placeholder="Название" formControlName="title">
+        <input matInput placeholder="Name" formControlName="title">
       </mat-form-field>
       <mat-form-field>
-        <input matInput [matDatepicker]="picker" placeholder="Дата" formControlName="date">
+        <input matInput [matDatepicker]="picker" placeholder="Date" formControlName="date">
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
