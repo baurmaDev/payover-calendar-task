@@ -1,1 +1,52 @@
-<p>appointment-form works!</p>
+<form [formGroup]="appointmentForm">
+<mat-card class="w-full max-w-md">
+    <mat-card-content class="p-6">
+      <div class="flex justify-between items-center mb-4">
+        <mat-form-field class="w-full">
+          <input matInput placeholder="Add name" formControlName="title" class="text-lg font-semibold border-none">
+        </mat-form-field>
+        <button mat-icon-button (click)="closeForm.emit()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+  
+      <mat-tab-group [(selectedIndex)]="appointmentForm.value.type">
+        <mat-tab label="Event"></mat-tab>
+        <mat-tab label="Task"></mat-tab>
+      </mat-tab-group>
+  
+      <div class="space-y-4">
+        <div class="flex items-center">
+          <mat-icon class="mr-2">access_time</mat-icon>
+          <span>{{ formatDate(appointmentForm.value.start) }} — {{ formatDate(appointmentForm.value.end) }}</span>
+        </div>
+  
+  
+        <div>
+          <mat-form-field class="w-full">
+            <mat-label>Location</mat-label>
+            <mat-icon matPrefix>place</mat-icon>
+            <input matInput placeholder="Add location" formControlName="location">
+          </mat-form-field>
+        </div>
+  
+        <div>
+          <mat-form-field class="w-full">
+            <mat-label>Description</mat-label>
+            <mat-icon matPrefix>description</mat-icon>
+            <textarea matInput placeholder="Add description or files" formControlName="description" rows="3"></textarea>
+          </mat-form-field>
+        </div>
+  
+        <div class="flex items-center">
+          <mat-icon class="mr-2">calendar_today</mat-icon>
+          <span>Bauyrzhаn Tursynbek</span>
+        </div>
+      </div>
+  
+      <div class="mt-6 flex justify-between">
+        <button mat-raised-button color="primary" (click)="onSubmit()">Save</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</form>

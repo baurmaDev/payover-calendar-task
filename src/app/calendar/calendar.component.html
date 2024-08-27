@@ -44,7 +44,7 @@
             <ng-container *ngFor="let date of getWeekDates(currentDate); let dayIndex = index">
               <div class="absolute top-0 bottom-0 border-r" [ngStyle]="{'left.%': (100 / 7) * dayIndex, 'width.%': 100 / 7}">
                 <ng-container *ngFor="let hour of hours">
-                  <div class="h-12 border-b" (click)="onTimeSlotClick(date, hour)"></div>
+                  <div class="h-12 border-b" (click)="onTimeSlotClick($event, date, hour)"></div>
                 </ng-container>
               </div>
             </ng-container>
@@ -57,6 +57,6 @@
     </main>
   </div>
   <ng-container *ngIf="selectedTimeRange">
-    <app-appointment-form [initialValues]="selectedTimeRange" (appointmentAdded)="onAppointmentAdded($event)"></app-appointment-form>
+    <app-appointment-form [initialValues]="selectedTimeRange" [clickPosition]="clickPosition" (appointmentAdded)="onAppointmentAdded($event)" (closeForm)="selectedTimeRange = null"></app-appointment-form>
   </ng-container>
 </div>
